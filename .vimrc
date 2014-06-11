@@ -76,37 +76,11 @@ imap <F1> <C-o>:echo<CR>
 " map . in visual mode
 vnoremap . :norm.<cr>
 
-" die hash rockets, die!
-" vnoremap <leader>h :s/:\(\w*\) *=>/\1:/g<cr>
 
-" map markdown preview
-" map <leader>m :!open -a Marked %<cr><cr>
 
-" map git commands
-map <leader>b :Gblame<cr>
-map <leader>l :!clear && git log -p %<cr>
-map <leader>d :!clear && git diff %<cr>
-
-" check code complexity and duplication for current file
-" map <leader>x :!clear &&
-"  \ echo '----- Complexity -----' && flog % &&
-"  \ echo '\n----- Duplication -----' && flay %<cr>
-
-" open gist after it's been created
-let g:gist_open_browser_after_post = 1
-
-" map Silver Searcher
-" map <leader>a :Ag!<space>
-
-" search for word under cursor with Silver Searcher
-map <leader>A :Ag! "<C-r>=expand('<cword>')<CR>"
 
 " clear the command line and search highlighting
 noremap <C-l> :nohlsearch<CR>
-
-" toggle spell check with <F5>
-map <F5> :setlocal spell! spelllang=en_us<cr>
-imap <F5> <ESC>:setlocal spell! spelllang=en_us<cr>
 
 " add :Plain command for converting text to plaintext
 command! Plain execute "%s/’/'/ge | %s/[“”]/\"/ge | %s/—/-/ge"
