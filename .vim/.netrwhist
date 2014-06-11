@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/Users/felipe/.git'
+let g:netrw_dirhist_2='/Users/felipe/.oh-my-zsh'
+let g:netrw_dirhist_3='/Volumes/Coyote/externalized/Development/rails_projects/sample_app'
+let g:netrw_dirhist_4='/Volumes/Coyote/externalized/Development/rails_projects/sample_app/app'
+let g:netrw_dirhist_5='/Volumes/Coyote/externalized/Development/rails_projects/sample_app/app/controllers'
+let g:netrw_dirhist_6='/Volumes/Coyote/externalized/Development/rails_projects/sample_app'
+let g:netrw_dirhist_7='/Volumes/Coyote/externalized/Development/rails_projects/sample_app/config'

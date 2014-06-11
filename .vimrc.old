@@ -1,0 +1,32 @@
+set number
+
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+if has('gui_running')
+  set guifont=Ubuntu\ Mono:h13
+  color codeschool
+endif
+
+let g:NERDTreeWinPos = "right"
+set guioptions-=T " Removes top toolbar
+set guioptions-=r " Removes right hand scroll bar
+set go-=L " Removes left hand scroll bar
+autocmd User Rails let b:surround_{char2nr('-')} = "<% \r %>" " displays <% %> correctly
+
+
+set nocompatible               " be iMproved
+filetype off                   " required!
+
+ set rtp+=~/.vim/bundle/vundle/
+ call vundle#rc()
+
+ " let Vundle manage Vundle
+ " required! 
+Bundle 'gmarik/vundle'
+Bundle 'derekwyatt/vim-scala'
+
+
+" Gundo mappsing
+nnoremap <F5> :GundoToggle<CR>
