@@ -69,15 +69,20 @@ endif
 " set leader key to comma
 let mapleader = ","
 
+" use JJ to hit escape and exit insert mode
+:imap jj <Esc>
+
+"use CTRL-f to activate find
+:map <C-f> :CtrlP<CR>
+
+:map <leader>s <ESC>:w<CR>
+
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
 
 " map . in visual mode
 vnoremap . :norm.<cr>
-
-
-
 
 " clear the command line and search highlighting
 noremap <C-l> :nohlsearch<CR>
