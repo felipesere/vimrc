@@ -66,6 +66,7 @@ endif
 
 " set leader key to comma
 let mapleader = ","
+map <leader>S :so $MYVIMRC<cr>
 
 " use JJ to hit escape and exit insert mode
 :imap jj <Esc>
@@ -132,44 +133,58 @@ map <leader>n :call RenameFile()<cr>
 " executute current test file
 function! ExecuteCurrentSpecFile()
   silent !clear
-  let file = expand('%')
-  exec ':w | :! rspec --color ' . file
+  let l:file = expand('%')
+  exec ':w'
+  if match(l:file,"spec") >= 0
+    call ExecuteTestInPipe(l:file)
+  else
+    let l:alternative = GetAlternativeFile(l:file)
+    call ExecuteTestInPipe(l:alternative)
+  endif
 endfunction
 
 function! ExecuteSingleLineInCurrentSpecFile()
   silent !clear
+  exec ':w'
   let file = expand('%')
   let line = line('.')
-  exec ':w | :! rspec --color ' . file . ':' . line
+  call ExecuteTestInPipe(file.":".line)
 endfunction
 
 function! ExecuteAllTestsInPipe()
   exec ':w'
-  exec ':silent :!echo "clear; rspec --color %" > test-commands'
+  call ExecuteTestInPipe("spec")
+endfunction
+
+function! ExecuteTestInPipe(file)
+  exec ':silent :!echo "clear; rspec --color '.a:file.'" > test-commands'
   exec ':redraw!'
 endfunction
 
-function! ExecuteAlternativeSpec()
+function! OpenAlternativeFile()
   silent !clear
   let l:current_file = expand('%')
-  if match(l:current_file ,"spec") >= 0
-    let l:alternative_file = substitute(l:current_file, "_spec.rb", ".rb", "")  
-    let l:alternative_file = substitute(l:alternative_file , "spec", "lib", "")  
-  else
-    let l:alternative_file = substitute(l:current_file, ".rb", "_spec.rb", "")
-    let l:alternative_file = substitute(l:alternative_file, "lib", "spec", "")
-  endif
+  let l:alternative_file = GetAlternativeFile(l:current_file)
   exec ':w'
   exec ':e '.l:alternative_file
   exec ':redraw!'
 endfunction
 
-map <leader>A :call ExecuteAlternativeSpec()<cr>
+function! GetAlternativeFile(input)
+  if match(a:input,"spec") >= 0
+    let l:alternative_file = substitute(a:input, "_spec.rb", ".rb", "")  
+    return substitute(l:alternative_file , "spec", "lib", "")  
+  else
+    let l:alternative_file = substitute(a:input, ".rb", "_spec.rb", "")
+    return substitute(l:alternative_file, "lib", "spec", "")
+  endif
+endfunction
+
+map <leader>A :call OpenAlternativeFile()<cr>
 
 map <leader>r :call ExecuteAllTestsInPipe()<cr>
 map <leader>t :call ExecuteCurrentSpecFile()<cr>
 map <leader>T :call ExecuteSingleLineInCurrentSpecFile()<cr>
-map <leader>S :so $MYVIMRC<cr>
 
 map <leader>h :call CreateRubyHash()<cr>
 map <leader>H :call AddToRubyHash()<cr>
@@ -200,9 +215,6 @@ function! AddToRubyHashWithCommas(prefix, postfix)
 endfunction
 
 function! AddToRubyHash()
-  "let key   = input('Enter  key:')
-  "let value = input('Enter  value:')
-  "exec ':normal i , '.key.' => '.value
   call AddToRubyHashWithCommas("",",")
 endfunction
 
