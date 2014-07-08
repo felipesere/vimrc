@@ -15,7 +15,6 @@ set ts=2                          " set indent to 2 spaces
 set shiftwidth=2
 set expandtab                     " use spaces, not tab characters
 set nocompatible                  " don't need to be compatible with old vim
-set relativenumber                " show relative line numbers
 set number                        " show the absolute number as well
 set showmatch                     " show bracket matches
 set ignorecase                    " ignore case in search
@@ -29,7 +28,6 @@ set vb                            " enable visual bell (disable audio bell)
 set ruler                         " show row and column in footer
 set scrolloff=2                   " minimum lines above/below cursor
 set laststatus=2                  " always show status bar
-" set list listchars=tab:»·,trail:· " show extra space characters
 set nofoldenable                  " disable code folding
 set clipboard=unnamed             " use the system clipboard
 set wildmenu                      " enable bash style tab completion
@@ -100,24 +98,6 @@ endif
 :imap <C-d> <C-[>diwi<Space>
 
 
-" execute current file
-map <leader>e :call ExecuteFile(expand("%"))<cr>
-
-" execute file if we know how
-function! ExecuteFile(filename)
-  :w
-  :silent !clear
-  if match(a:filename, '\.rb$') != -1
-    exec ":!ruby " . a:filename
-  elseif match(a:filename, '\.js$') != -1
-    exec ":!node " . a:filename
-  elseif match(a:filename, '\.sh$') != -1
-    exec ":!bash " . a:filename
-  else
-    exec ":!echo \"Don't know how to execute: \"" . a:filename
-  end
-endfunction
-
 " jump to last position in file
 autocmd BufReadPost *
   \ if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -148,52 +128,82 @@ function! RenameFile()
 endfunction
 map <leader>n :call RenameFile()<cr>
 
-" run specs with ',t' via Gary Bernhardt
-function! RunTests(filename)
-  " Write the file and run tests for the given filename
-  :w
-  :silent !clear
-  if match(a:filename, '\.feature$') != -1
-    exec ":!bundle exec cucumber " . a:filename
-  elseif match(a:filename, '_test\.rb$') != -1
-    exec ":!ruby -Itest " . a:filename
-  else
-    if filereadable("Gemfile")
-      exec ":!bundle exec rspec --color " . a:filename
-    else
-      exec ":!rspec --color " . a:filename
-    end
-  end
+
+" executute current test file
+function! ExecuteCurrentSpecFile()
+  silent !clear
+  let file = expand('%')
+  exec ':w | :! rspec --color ' . file
 endfunction
 
-function! SetTestFile()
-  " set the spec file that tests will be run for.
-  let t:grb_test_file=@%
+function! ExecuteSingleLineInCurrentSpecFile()
+  silent !clear
+  let file = expand('%')
+  let line = line('.')
+  exec ':w | :! rspec --color ' . file . ':' . line
 endfunction
 
-function! RunTestFile(...)
-  if a:0
-    let command_suffix = a:1
+function! ExecuteAllTestsInPipe()
+  exec ':w'
+  exec ':silent :!echo "clear; rspec --color %" > test-commands'
+  exec ':redraw!'
+endfunction
+
+function! ExecuteAlternativeSpec()
+  silent !clear
+  let l:current_file = expand('%')
+  if match(l:current_file ,"spec") >= 0
+    let l:alternative_file = substitute(l:current_file, "_spec.rb", ".rb", "")  
+    let l:alternative_file = substitute(l:alternative_file , "spec", "lib", "")  
   else
-    let command_suffix = ""
+    let l:alternative_file = substitute(l:current_file, ".rb", "_spec.rb", "")
+    let l:alternative_file = substitute(l:alternative_file, "lib", "spec", "")
   endif
-
-  " run the tests for the previously-marked file.
-  let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|_test.rb\)$') != -1
-  if in_test_file
-    call SetTestFile()
-  elseif !exists("t:grb_test_file")
-    return
-  end
-  call RunTests(t:grb_test_file . command_suffix)
+  exec ':w'
+  exec ':e '.l:alternative_file
+  exec ':redraw!'
 endfunction
 
-function! RunNearestTest()
-  let spec_line_number = line('.')
-  call RunTestFile(":" . spec_line_number . " -b")
+map <leader>A :call ExecuteAlternativeSpec()<cr>
+
+map <leader>r :call ExecuteAllTestsInPipe()<cr>
+map <leader>t :call ExecuteCurrentSpecFile()<cr>
+map <leader>T :call ExecuteSingleLineInCurrentSpecFile()<cr>
+map <leader>S :so $MYVIMRC<cr>
+
+map <leader>h :call CreateRubyHash()<cr>
+map <leader>H :call AddToRubyHash()<cr>
+
+function! CreateRubyHash()
+  let key   = input('Enter  key:')
+  let value = input('Enter  value:')
+  let comma = input('Enter comma')
+  if empty(key) && empty(value)
+    exec ':normal i {}'.comma
+  else
+    exec ':normal i { '.key.' => '.value.' }'.comma
+  endif
 endfunction
 
-" run test runner
-map <leader>t :call RunTestFile()<cr>
-map <leader>T :call RunNearestTest()<cr>
+function! AddToRubyHashWithCommas(prefix, postfix)
+  let pre = a:prefix
+  let post = a:postfix
+  let key   = input('Enter  key:')
+  let value = input('Enter  value:')
+  if empty(pre)
+    pre=""
+  endif
+  if empty(post)
+    post=""
+  endif
+  exec ':normal i '.pre.' '.key.' => '.value.' '.post
+endfunction
+
+function! AddToRubyHash()
+  "let key   = input('Enter  key:')
+  "let value = input('Enter  value:')
+  "exec ':normal i , '.key.' => '.value
+  call AddToRubyHashWithCommas("",",")
+endfunction
+
 
