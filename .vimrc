@@ -57,6 +57,7 @@ highlight Visual       ctermbg=3   ctermfg=0
 highlight Pmenu        ctermbg=240 ctermfg=12
 highlight PmenuSel     ctermbg=0   ctermfg=3
 highlight SpellBad     ctermbg=0   ctermfg=1
+set pastetoggle=<F2>
 
 " highlight the status bar when in insert mode
 if version >= 700
@@ -70,6 +71,7 @@ map <leader>S :so $MYVIMRC<cr>
 
 " use JJ to hit escape and exit insert mode
 :imap jj <Esc>
+nmap ; :
 
 "use CTRL-f to activate find
 :map <C-f> :CtrlP<CR>
@@ -84,7 +86,10 @@ imap <F1> <C-o>:echo<CR>
 vnoremap . :norm.<cr>
 
 " clear the command line and search highlighting
-noremap <C-l> :nohlsearch<CR>
+cmap <C-l> :nohlsearch<CR>
+
+imap <C-l> => 
+
 
 " add :Plain command for converting text to plaintext
 command! Plain execute "%s/’/'/ge | %s/[“”]/\"/ge | %s/—/-/ge"
@@ -157,6 +162,7 @@ function! ExecuteAllTestsInPipe()
 endfunction
 
 function! ExecuteTestInPipe(file)
+  let g:file_for_last_test = a:file
   exec ':silent :!echo "clear; rspec --color '.a:file.'" > test-commands'
   exec ':redraw!'
 endfunction
@@ -180,42 +186,21 @@ function! GetAlternativeFile(input)
   endif
 endfunction
 
-map <leader>A :call OpenAlternativeFile()<cr>
+function! RerunLastTest()
+  exec ':w'
+  if exists('g:file_for_last_test')
+    call ExecuteTestInPipe(g:file_for_last_test)
+  else
+    call ExecuteAllTestsInPipe()
+  endif
+endfunction
 
-map <leader>r :call ExecuteAllTestsInPipe()<cr>
+map <leader>a :call OpenAlternativeFile()<cr>
+
+map <leader>R :call ExecuteAllTestsInPipe()<cr>
 map <leader>t :call ExecuteCurrentSpecFile()<cr>
 map <leader>T :call ExecuteSingleLineInCurrentSpecFile()<cr>
+map <leader>r :call RerunLastTest()<cr>
 
-map <leader>h :call CreateRubyHash()<cr>
-map <leader>H :call AddToRubyHash()<cr>
-
-function! CreateRubyHash()
-  let key   = input('Enter  key:')
-  let value = input('Enter  value:')
-  let comma = input('Enter comma')
-  if empty(key) && empty(value)
-    exec ':normal i {}'.comma
-  else
-    exec ':normal i { '.key.' => '.value.' }'.comma
-  endif
-endfunction
-
-function! AddToRubyHashWithCommas(prefix, postfix)
-  let pre = a:prefix
-  let post = a:postfix
-  let key   = input('Enter  key:')
-  let value = input('Enter  value:')
-  if empty(pre)
-    pre=""
-  endif
-  if empty(post)
-    post=""
-  endif
-  exec ':normal i '.pre.' '.key.' => '.value.' '.post
-endfunction
-
-function! AddToRubyHash()
-  call AddToRubyHashWithCommas("",",")
-endfunction
 
 
