@@ -59,6 +59,16 @@ highlight PmenuSel     ctermbg=0   ctermfg=3
 highlight SpellBad     ctermbg=0   ctermfg=1
 set pastetoggle=<F2>
 
+inoremap <up> <nop>
+vnoremap <up> <nop>
+inoremap <down> <nop>
+vnoremap <down> <nop>
+inoremap <left> <nop>
+vnoremap <left> <nop>
+inoremap <right> <nop>
+vnoremap <right> <nop>
+
+
 " highlight the status bar when in insert mode
 if version >= 700
   au InsertEnter * hi StatusLine ctermfg=235 ctermbg=2
@@ -86,7 +96,7 @@ imap <F1> <C-o>:echo<CR>
 vnoremap . :norm.<cr>
 
 " clear the command line and search highlighting
-cmap <C-l> :nohlsearch<CR>
+map <leader>l :nohl<CR>
 
 imap <C-l> => 
 
@@ -202,5 +212,15 @@ map <leader>t :call ExecuteCurrentSpecFile()<cr>
 map <leader>T :call ExecuteSingleLineInCurrentSpecFile()<cr>
 map <leader>r :call RerunLastTest()<cr>
 
+map <leader>co :call ToggleComments()<cr>
 
-
+function! ToggleComments() range
+  let l:first = line("'<")
+  let l:last  = line("'>")
+  let l:line = getline(l:first)
+  if match(l:line, "^#") >= 0
+    exec ':'.l:first.','.l:last.'s/^#//'
+  else
+    exec ':'.l:first.','.l:last.'s/^/#'
+  endif
+endfunction
