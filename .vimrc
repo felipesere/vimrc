@@ -25,18 +25,13 @@ set incsearch                     " show search results as I type
 set mouse=                       " enable mouse support
 set ttimeoutlen=100               " decrease timeout for faster insert with 'O'
 set vb                            " enable visual bell (disable audio bell)
-set ruler                         " show row and column in footer
-set scrolloff=2                   " minimum lines above/below cursor
+set scrolloff=5                   " minimum lines above/below cursor
 set laststatus=2                  " always show status bar
 set nofoldenable                  " disable code folding
 set clipboard=unnamed             " use the system clipboard
 set wildmenu                      " enable bash style tab completion
 set wildmode=list:longest,full
 runtime macros/matchit.vim        " use % to jump between start/end of methods
-
-" put useful info in status bar
-" set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%l,%c]\ [%L,%p%%]
-set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%l,%c]\ [%L,%p%%]
 
 " set dark background and color scheme
 set background=dark
@@ -47,7 +42,7 @@ highlight clear SignColumn
 highlight VertSplit    ctermbg=236
 highlight ColorColumn  ctermbg=237
 highlight LineNr       ctermbg=236 ctermfg=240
-highlight CursorLineNr ctermbg=236 ctermfg=240
+highlight CursorLineNr ctermbg=236 ctermfg=226
 highlight CursorLine   ctermbg=236
 highlight StatusLineNC ctermbg=238 ctermfg=0
 highlight StatusLine   ctermbg=240 ctermfg=12
@@ -57,6 +52,12 @@ highlight Visual       ctermbg=3   ctermfg=0
 highlight Pmenu        ctermbg=240 ctermfg=12
 highlight PmenuSel     ctermbg=0   ctermfg=3
 highlight SpellBad     ctermbg=0   ctermfg=1
+
+" put useful info in status bar
+" set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%l,%c]\ [%L,%p%%]
+set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%p%%]
+
+
 set pastetoggle=<F2>
 
 inoremap <up> <nop>
@@ -71,47 +72,40 @@ vnoremap <right> <nop>
 
 " highlight the status bar when in insert mode
 if version >= 700
+  au VimEnter * hi StatusLine ctermbg=0 ctermfg=12
   au InsertEnter * hi StatusLine ctermfg=235 ctermbg=2
-  au InsertLeave * hi StatusLine ctermbg=240 ctermfg=12
+  au InsertLeave * hi StatusLine ctermbg=0 ctermfg=12
 endif
 
 " set leader key to comma
 let mapleader = ","
 map <leader>S :so $MYVIMRC<cr>
 
+map <silent> <leader><space> :nohl<cr>
+
 " use JJ to hit escape and exit insert mode
-:imap jj <Esc>
+imap jj <Esc>
 nmap ; :
 
 "use CTRL-f to activate find
-:map <C-f> :CtrlP<CR>
+map <C-f> :CtrlP<CR>
 
-:map <leader>s <ESC>:w<CR>
+map <leader>s <ESC>:w<CR>
 
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
+nnoremap <silent> <F1> :NERDTreeToggle<CR>
 
 " map . in visual mode
 vnoremap . :norm.<cr>
 
-" clear the command line and search highlighting
-map <leader>l :nohl<CR>
 
-imap <C-l> => 
+imap <silent> <C-l> => 
 
 
 " add :Plain command for converting text to plaintext
 command! Plain execute "%s/’/'/ge | %s/[“”]/\"/ge | %s/—/-/ge"
-
-" hint to keep lines short
-if exists('+colorcolumn')
-  set colorcolumn=120
-endif
-
-" custom keyboard mappings:
-" delete current word and get back to insert mode
-:imap <C-d> <C-[>diwi<Space>
 
 
 " jump to last position in file
