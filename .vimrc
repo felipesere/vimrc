@@ -59,6 +59,7 @@ set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%p%%]
 
 
 set pastetoggle=<F2>
+let g:NumberToggleTrigger = "<F3>"
 
 inoremap <up> <nop>
 vnoremap <up> <nop>
@@ -68,6 +69,8 @@ inoremap <left> <nop>
 vnoremap <left> <nop>
 inoremap <right> <nop>
 vnoremap <right> <nop>
+inoremap <D> <nop>
+vnoremap <D> <nop>
 
 
 " highlight the status bar when in insert mode
@@ -167,9 +170,22 @@ endfunction
 
 function! ExecuteTestInPipe(file)
   let g:file_for_last_test = a:file
-  exec ':silent :!echo "clear; rspec --color '.a:file.'" > test-commands'
-  exec ':redraw!'
+  call SendToPipe('bundle exec rspec --color '.a:file)
 endfunction
+
+function! SendToPipe(line)
+  if filereadable("test-commands")
+    exec ':silent :!echo "clear; '.a:line.'" > test-commands'
+    exec ':redraw!'
+  else
+    exec ':! '.a:line
+  endif
+endfunction
+
+function! SendToPipeWrapper(...)
+  call SendToPipe(join(a:000," "))
+endfunction
+command! -nargs=* Tpipe call SendToPipeWrapper(<f-args>)
 
 function! OpenAlternativeFile()
   silent !clear
@@ -179,6 +195,7 @@ function! OpenAlternativeFile()
   exec ':e '.l:alternative_file
   exec ':redraw!'
 endfunction
+q
 
 function! GetAlternativeFile(input)
   if match(a:input,"spec") >= 0
@@ -218,3 +235,4 @@ function! ToggleComments() range
     exec ':'.l:first.','.l:last.'s/^/#'
   endif
 endfunction
+
