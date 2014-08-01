@@ -32,6 +32,9 @@ set clipboard=unnamed             " use the system clipboard
 set wildmenu                      " enable bash style tab completion
 set wildmode=list:longest,full
 runtime macros/matchit.vim        " use % to jump between start/end of methods
+set shortmess+=I
+
+let g:netrw_banner=0
 
 " set dark background and color scheme
 set background=dark
@@ -80,11 +83,17 @@ if version >= 700
   au InsertLeave * hi StatusLine ctermbg=0 ctermfg=12
 endif
 
+" Open the explorer if no file was given
+if argc() == 0
+  autocmd VimEnter * Explore
+endif
+
 " set leader key to comma
 let mapleader = ","
 map <leader>S :so $MYVIMRC<cr>
 
 map <silent> <leader><space> :nohl<cr>
+
 
 " use JJ to hit escape and exit insert mode
 imap jj <Esc>
@@ -195,7 +204,7 @@ function! OpenAlternativeFile()
   exec ':e '.l:alternative_file
   exec ':redraw!'
 endfunction
-q
+
 
 function! GetAlternativeFile(input)
   if match(a:input,"spec") >= 0
