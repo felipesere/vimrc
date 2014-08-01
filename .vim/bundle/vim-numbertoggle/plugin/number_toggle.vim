@@ -80,27 +80,27 @@ endfunc
 
 
 " Automatically set relative line numbers when opening a new document
-autocmd BufNewFile * :call UpdateMode()
-autocmd BufReadPost * :call UpdateMode()
-autocmd FilterReadPost * :call UpdateMode()
-autocmd FileReadPost * :call UpdateMode()
-
+" autocmd BufNewFile * :call UpdateMode()
+" autocmd BufReadPost * :call UpdateMode()
+" autocmd FilterReadPost * :call UpdateMode()
+" autocmd FileReadPost * :call UpdateMode()
+" 
 " Automatically switch to absolute numbers when focus is lost and switch back
 " when the focus is regained.
-autocmd FocusLost * :call FocusLost()
-autocmd FocusGained * :call FocusGained()
-autocmd WinLeave * :call FocusLost()
-autocmd WinEnter * :call FocusGained()
-
+" autocmd FocusLost * :call FocusLost()
+" autocmd FocusGained * :call FocusGained()
+" autocmd WinLeave * :call FocusLost()
+" autocmd WinEnter * :call FocusGained()
+" 
 " Switch to absolute line numbers when the window loses focus and switch back
 " to relative line numbers when the focus is regained.
-autocmd WinLeave * :call FocusLost()
-autocmd WinEnter * :call FocusGained()
+" autocmd WinLeave * :call FocusLost()
+" autocmd WinEnter * :call FocusGained()
 
 " Switch to absolute line numbers when entering insert mode and switch back to
 " relative line numbers when switching back to normal mode.
-autocmd InsertEnter * :call InsertEnter()
-autocmd InsertLeave * :call InsertLeave()
+" autocmd InsertEnter * :call InsertEnter()
+" autocmd InsertLeave * :call InsertLeave()
 
 " ensures default behavior / backward compatibility
 if ! exists ( 'g:UseNumberToggleTrigger' )
@@ -110,5 +110,5 @@ endif
 if exists('g:NumberToggleTrigger')
 	exec "nnoremap <silent> " . g:NumberToggleTrigger . " :call NumberToggle()<cr>"
 elseif g:UseNumberToggleTrigger
-	nnoremap <silent> <C-n> :call NumberToggle()<cr>
+	nnoremap <silent>  <F3> :call NumberToggle()<cr>
 endif
