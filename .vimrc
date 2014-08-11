@@ -83,10 +83,7 @@ if version >= 700
   au InsertLeave * hi StatusLine ctermbg=0 ctermfg=12
 endif
 
-" Open the explorer if no file was given
-if argc() == 0
-  autocmd VimEnter * Explore
-endif
+autocmd VimEnter * NERDTree
 
 " set leader key to comma
 let mapleader = ","
@@ -97,8 +94,9 @@ map <silent> <leader><space> :nohl<cr>
 nmap ; :
 
 "use CTRL-f to activate find
-map <C-f> :CtrlP<CR>
-
+"map <C-f> :CtrlP<CR>
+nnoremap <silent> <C-f> :CommandT<CR>
+let g:CommandTMaxHeight=10
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
