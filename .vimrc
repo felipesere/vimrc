@@ -94,15 +94,10 @@ map <leader>S :so $MYVIMRC<cr>
 
 map <silent> <leader><space> :nohl<cr>
 
-
-" use JJ to hit escape and exit insert mode
-imap jj <Esc>
 nmap ; :
 
 "use CTRL-f to activate find
 map <C-f> :CtrlP<CR>
-
-map <leader>s <ESC>:w<CR>
 
 " unmap F1 help
 nmap <F1> :echo<CR>
