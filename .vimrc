@@ -47,8 +47,8 @@ highlight ColorColumn  ctermbg=237
 highlight LineNr       ctermbg=236 ctermfg=240
 highlight CursorLineNr ctermbg=236 ctermfg=226
 highlight CursorLine   ctermbg=236
-highlight StatusLineNC ctermbg=238 ctermfg=0
-highlight StatusLine   ctermbg=240 ctermfg=12
+highlight StatusLineNC ctermbg=240 ctermfg=0
+highlight StatusLine   ctermbg=249 ctermfg=11
 highlight IncSearch    ctermbg=0   ctermfg=3
 highlight Search       ctermbg=0   ctermfg=9
 highlight Visual       ctermbg=3   ctermfg=0
@@ -58,7 +58,7 @@ highlight SpellBad     ctermbg=0   ctermfg=1
 
 " put useful info in status bar
 " set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%l,%c]\ [%L,%p%%]
-set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%p%%]
+set statusline=%f%m%r%h%w\ %=[%p%%]
 
 
 set pastetoggle=<F2>
@@ -83,13 +83,14 @@ if version >= 700
   au InsertLeave * hi StatusLine ctermbg=0 ctermfg=12
 endif
 
-autocmd VimEnter * NERDTree
-
 " set leader key to comma
 let mapleader = ","
 map <leader>S :so $MYVIMRC<cr>
 
 map <silent> <leader><space> :nohl<cr>
+
+"  eliminate white spaace
+nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
 nmap ; :
 
@@ -105,12 +106,7 @@ nnoremap <silent> <F1> :NERDTreeToggle<CR>
 " map . in visual mode
 vnoremap . :norm.<cr>
 
-
-imap <silent> <C-l> => 
-
-
-" add :Plain command for converting text to plaintext
-command! Plain execute "%s/’/'/ge | %s/[“”]/\"/ge | %s/—/-/ge"
+imap <silent> <C-l> =>
 
 
 " jump to last position in file
@@ -201,8 +197,8 @@ endfunction
 
 function! GetAlternativeFile(input)
   if match(a:input,"spec") >= 0
-    let l:alternative_file = substitute(a:input, "_spec.rb", ".rb", "")  
-    return substitute(l:alternative_file , "spec", "lib", "")  
+    let l:alternative_file = substitute(a:input, "_spec.rb", ".rb", "")
+    return substitute(l:alternative_file , "spec", "lib", "")
   else
     let l:alternative_file = substitute(a:input, ".rb", "_spec.rb", "")
     return substitute(l:alternative_file, "lib", "spec", "")
@@ -236,5 +232,32 @@ function! ToggleComments() range
   else
     exec ':'.l:first.','.l:last.'s/^/#'
   endif
+endfunction
+
+command! -nargs=* Todo call CreateNewTask(<f-args>)
+function! CreateNewTask(...)
+  let l:current_time = strftime("%Y-%m-%d")
+  let l:session = ExtractTmuxSession()
+  let l:line = l:current_time.' '.join(a:000," ").' @vim '.l:session
+  :silent execute ':! todo.sh add '.l:line
+  exec ':redraw!'
+endfunction
+
+
+command! -nargs=0 Tmx call ExtractTmuxSession(<f-args>)
+function! ExtractTmuxSession()
+  let l:session_name = system('tmux display-message -p "#S"')
+  if empty(l:session_name) 
+    return ""
+  endif
+  return '+'.l:session_name
+endfunction
+
+function! ExtractPriority(line)
+ 
+endfunction
+
+function! Strip(input_string)
+      return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
 
