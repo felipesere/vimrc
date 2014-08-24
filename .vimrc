@@ -19,7 +19,9 @@ set number                        " show the absolute number as well
 set showmatch                     " show bracket matches
 set ignorecase                    " ignore case in search
 set hlsearch                      " highlight all search matches
-set cursorline                    " highlight current line
+set nocursorline                  " highlight current line (DISABLED)
+set nocursorcolumn
+set nofoldenable                  " disable code folding
 set smartcase                     " pay attention to case when caps are used
 set incsearch                     " show search results as I type
 set mouse=                       " enable mouse support
@@ -27,7 +29,6 @@ set ttimeoutlen=100               " decrease timeout for faster insert with 'O'
 set vb                            " enable visual bell (disable audio bell)
 set scrolloff=5                   " minimum lines above/below cursor
 set laststatus=2                  " always show status bar
-set nofoldenable                  " disable code folding
 set clipboard=unnamed             " use the system clipboard
 set wildmenu                      " enable bash style tab completion
 set wildmode=list:longest,full
@@ -56,13 +57,11 @@ highlight Pmenu        ctermbg=240 ctermfg=12
 highlight PmenuSel     ctermbg=0   ctermfg=3
 highlight SpellBad     ctermbg=0   ctermfg=1
 
-" put useful info in status bar
-" set statusline=%F%m%r%h%w\ %{fugitive#statusline()}\ [%l,%c]\ [%L,%p%%]
-set statusline=%f%m%r%h%w\ %=[%p%%]
-
 
 set pastetoggle=<F2>
 let g:NumberToggleTrigger = "<F3>"
+noremap <F4> :CommandTFlush<CR>
+noremap <F10> :AirlineRefresh<CR>
 
 inoremap <up> <nop>
 vnoremap <up> <nop>
@@ -75,17 +74,20 @@ vnoremap <right> <nop>
 inoremap <D> <nop>
 vnoremap <D> <nop>
 
+let g:NERDTreeShowHidden=1
+let g:NERDTreeDirArrows=0
 
-" highlight the status bar when in insert mode
-if version >= 700
-  au VimEnter * hi StatusLine ctermbg=0 ctermfg=12
-  au InsertEnter * hi StatusLine ctermfg=235 ctermbg=2
-  au InsertLeave * hi StatusLine ctermbg=0 ctermfg=12
-endif
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_section_b = ''
+let g:airline_section_x = ''
+let g:airline_section_y = ''
+let g:airline_section_z = airline#section#create(['%l/%L'])
 
 " set leader key to comma
 let mapleader = ","
-map <leader>S :so $MYVIMRC<cr>
+map <leader>S :so $MYVIMRC <cr>
+
 
 map <silent> <leader><space> :nohl<cr>
 
@@ -95,9 +97,9 @@ nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 nmap ; :
 
 "use CTRL-f to activate find
-"map <C-f> :CtrlP<CR>
 nnoremap <silent> <C-f> :CommandT<CR>
 let g:CommandTMaxHeight=10
+
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
@@ -247,14 +249,14 @@ endfunction
 command! -nargs=0 Tmx call ExtractTmuxSession(<f-args>)
 function! ExtractTmuxSession()
   let l:session_name = system('tmux display-message -p "#S"')
-  if empty(l:session_name) 
+  if empty(l:session_name)
     return ""
   endif
   return '+'.l:session_name
 endfunction
 
 function! ExtractPriority(line)
- 
+
 endfunction
 
 function! Strip(input_string)
