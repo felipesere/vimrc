@@ -19,12 +19,12 @@ set number                        " show the absolute number as well
 set showmatch                     " show bracket matches
 set ignorecase                    " ignore case in search
 set hlsearch                      " highlight all search matches
-set nocursorline                  " highlight current line (DISABLED)
+set cursorline                    " highlight current line (DISABLED)
 set nocursorcolumn
 set nofoldenable                  " disable code folding
 set smartcase                     " pay attention to case when caps are used
 set incsearch                     " show search results as I type
-set mouse=                       " enable mouse support
+set mouse=                        " enable mouse support
 set ttimeoutlen=100               " decrease timeout for faster insert with 'O'
 set vb                            " enable visual bell (disable audio bell)
 set scrolloff=5                   " minimum lines above/below cursor
@@ -34,6 +34,7 @@ set wildmenu                      " enable bash style tab completion
 set wildmode=list:longest,full
 runtime macros/matchit.vim        " use % to jump between start/end of methods
 set shortmess+=I
+set noswapfile
 
 let g:netrw_banner=0
 
@@ -43,19 +44,24 @@ colorscheme base16-railscasts
 
 " set up some custom colors
 highlight clear SignColumn
-highlight VertSplit    ctermbg=236
+highlight VertSplit    ctermbg=00
 highlight ColorColumn  ctermbg=237
-highlight LineNr       ctermbg=236 ctermfg=240
-highlight CursorLineNr ctermbg=236 ctermfg=226
-highlight CursorLine   ctermbg=236
-highlight StatusLineNC ctermbg=240 ctermfg=0
-highlight StatusLine   ctermbg=249 ctermfg=11
+highlight LineNr       ctermbg=00 ctermfg=240
+highlight SignColumn   ctermbg=00 ctermfg=240
+highlight CursorLineNr ctermbg=236 ctermfg=4
+highlight CursorLine   ctermbg=235
+highlight StatusLineNC ctermbg=00 ctermfg=0
+highlight StatusLine   ctermbg=00 ctermfg=11
 highlight IncSearch    ctermbg=0   ctermfg=3
 highlight Search       ctermbg=0   ctermfg=9
 highlight Visual       ctermbg=3   ctermfg=0
 highlight Pmenu        ctermbg=240 ctermfg=12
 highlight PmenuSel     ctermbg=0   ctermfg=3
 highlight SpellBad     ctermbg=0   ctermfg=1
+highlight TabLineFill  ctermbg=0   ctermfg=0
+highlight TabLine      ctermbg=240  ctermfg=0
+highlight TabLineSel   ctermbg=6    ctermfg=0
+
 
 
 set pastetoggle=<F2>
@@ -74,31 +80,67 @@ vnoremap <right> <nop>
 inoremap <D> <nop>
 vnoremap <D> <nop>
 
-let g:NERDTreeShowHidden=1
-let g:NERDTreeDirArrows=0
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>
 
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 let g:airline_section_b = ''
 let g:airline_section_x = ''
 let g:airline_section_y = ''
-let g:airline_section_z = airline#section#create(['%l/%L'])
+let g:airline_section_z = airline#section#create(['%3l/%3L (%3p%%)'])
+
 
 " set leader key to comma
 let mapleader = ","
 map <leader>S :so $MYVIMRC <cr>
 
-
 map <silent> <leader><space> :nohl<cr>
+let g:vim_markdown_folding_disabled=1
+let g:NERDTreeDirArrows=0
+
+let g:goyo_width=120
+
+function! s:goyo_enter()
+  Limelight0.7
+  let b:quitting = 0
+  let b:quitting_bang = 0
+  autocmd QuitPre <buffer> let b:quitting = 1
+  cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
+  set scrolloff=999
+endfunction
+
+function! s:goyo_leave()
+  set scrolloff=5
+  Limelight!
+  " Quit Vim if this is the only remaining buffer
+  if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
+    if b:quitting_bang
+      qa!
+    else
+      qa
+    endif
+  endif
+endfunction
+
+autocmd! User GoyoEnter
+autocmd! User GoyoLeave
+autocmd User GoyoEnter call <SID>goyo_enter()
+autocmd User GoyoLeave call <SID>goyo_leave()
 
 "  eliminate white spaace
 nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
 nmap ; :
 
+command Q execute "qa!"
+
 "use CTRL-f to activate find
-nnoremap <silent> <C-f> :CommandT<CR>
+nnoremap <silent> <C-p> :CommandT<CR>
 let g:CommandTMaxHeight=10
+let g:CommandTMatchWindowReverse=1
 
 " unmap F1 help
 nmap <F1> :echo<CR>
@@ -107,8 +149,6 @@ nnoremap <silent> <F1> :NERDTreeToggle<CR>
 
 " map . in visual mode
 vnoremap . :norm.<cr>
-
-imap <silent> <C-l> =>
 
 
 " jump to last position in file
