@@ -35,6 +35,7 @@ set wildmode=list:longest,full
 runtime macros/matchit.vim        " use % to jump between start/end of methods
 set shortmess+=I
 set noswapfile
+set showmatch                     " Highlights the matching parentheses
 
 let g:netrw_banner=0
 
@@ -45,7 +46,7 @@ colorscheme base16-railscasts
 " set up some custom colors
 highlight clear SignColumn
 highlight VertSplit    ctermbg=00
-highlight ColorColumn  ctermbg=237
+highlight ColorColumn  ctermbg=00
 highlight LineNr       ctermbg=00 ctermfg=240
 highlight SignColumn   ctermbg=00 ctermfg=240
 highlight CursorLineNr ctermbg=236 ctermfg=4
@@ -61,8 +62,6 @@ highlight SpellBad     ctermbg=0   ctermfg=1
 highlight TabLineFill  ctermbg=0   ctermfg=0
 highlight TabLine      ctermbg=240  ctermfg=0
 highlight TabLineSel   ctermbg=6    ctermfg=0
-
-
 
 set pastetoggle=<F2>
 let g:NumberToggleTrigger = "<F3>"
@@ -90,7 +89,7 @@ let g:airline_right_sep = ''
 let g:airline_section_b = ''
 let g:airline_section_x = ''
 let g:airline_section_y = ''
-let g:airline_section_z = airline#section#create(['%3l/%3L (%3p%%)'])
+" let g:airline_section_z = airline#section#create(['%3l/%3L (%3p%%)'])
 
 
 " set leader key to comma
@@ -98,6 +97,7 @@ let mapleader = ","
 map <leader>S :so $MYVIMRC <cr>
 
 map <silent> <leader><space> :nohl<cr>
+map <silent> <leader>e g_
 let g:vim_markdown_folding_disabled=1
 let g:NERDTreeDirArrows=0
 
@@ -141,6 +141,7 @@ command Q execute "qa!"
 nnoremap <silent> <C-p> :CommandT<CR>
 let g:CommandTMaxHeight=10
 let g:CommandTMatchWindowReverse=1
+let g:COmmandTAcceptSelectionSplitMap=['<CR>','<C-h>']
 
 " unmap F1 help
 nmap <F1> :echo<CR>
@@ -150,12 +151,8 @@ nnoremap <silent> <F1> :NERDTreeToggle<CR>
 " map . in visual mode
 vnoremap . :norm.<cr>
 
-
-" jump to last position in file
-autocmd BufReadPost *
-  \ if line("'\"") > 0 && line("'\"") <= line("$") |
-  \   exe "normal g`\"" |
-  \ endif
+"vim Clojure
+let vimclojure#HighlightBuiltins=1
 
 " multi-purpose tab key (auto-complete)
 function! InsertTabWrapper()
@@ -220,6 +217,10 @@ function! SendToPipe(line)
   else
     exec ':! '.a:line
   endif
+endfunction
+
+function! RunTestSh()
+  call SendToPipe('./test.sh')
 endfunction
 
 function! SendToPipeWrapper(...)
