@@ -69,15 +69,19 @@ noremap <F4> :CommandTFlush<CR>
 noremap <F10> :AirlineRefresh<CR>
 
 inoremap <up> <nop>
-vnoremap <up> <nop>
 inoremap <down> <nop>
-vnoremap <down> <nop>
 inoremap <left> <nop>
-vnoremap <left> <nop>
 inoremap <right> <nop>
+
+vnoremap <up> <nop>
+vnoremap <down> <nop>
+vnoremap <left> <nop>
 vnoremap <right> <nop>
-inoremap <D> <nop>
-vnoremap <D> <nop>
+
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> <nop>
+nnoremap <right> <nop>
 
 nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
@@ -89,8 +93,6 @@ let g:airline_right_sep = ''
 let g:airline_section_b = ''
 let g:airline_section_x = ''
 let g:airline_section_y = ''
-" let g:airline_section_z = airline#section#create(['%3l/%3L (%3p%%)'])
-
 
 " set leader key to comma
 let mapleader = ","
