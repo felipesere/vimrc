@@ -133,7 +133,7 @@ autocmd User GoyoEnter call <SID>goyo_enter()
 autocmd User GoyoLeave call <SID>goyo_leave()
 
 "  eliminate white spaace
-nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z
+nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z<cr>:w<cr>
 
 nmap ; :
 
@@ -148,6 +148,7 @@ let g:COmmandTAcceptSelectionSplitMap=['<CR>','<C-h>']
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
+
 nnoremap <silent> <F1> :NERDTreeToggle<CR>
 
 " map . in visual mode
