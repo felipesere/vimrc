@@ -35,33 +35,19 @@ set wildmode=list:longest,full
 runtime macros/matchit.vim        " use % to jump between start/end of methods
 set shortmess+=I
 set noswapfile
-set showmatch                     " Highlights the matching parentheses
 
 let g:netrw_banner=0
 
 " set dark background and color scheme
 set background=dark
-colorscheme base16-railscasts
+colorscheme base16-default
 
 " set up some custom colors
-highlight clear SignColumn
+"highlight clear SignColumn
 highlight VertSplit    ctermbg=00
 highlight ColorColumn  ctermbg=00
 highlight LineNr       ctermbg=00 ctermfg=240
 highlight SignColumn   ctermbg=00 ctermfg=240
-highlight CursorLineNr ctermbg=236 ctermfg=4
-highlight CursorLine   ctermbg=235
-highlight StatusLineNC ctermbg=00 ctermfg=0
-highlight StatusLine   ctermbg=00 ctermfg=11
-highlight IncSearch    ctermbg=0   ctermfg=3
-highlight Search       ctermbg=0   ctermfg=9
-highlight Visual       ctermbg=3   ctermfg=0
-highlight Pmenu        ctermbg=240 ctermfg=12
-highlight PmenuSel     ctermbg=0   ctermfg=3
-highlight SpellBad     ctermbg=0   ctermfg=1
-highlight TabLineFill  ctermbg=0   ctermfg=0
-highlight TabLine      ctermbg=240  ctermfg=0
-highlight TabLineSel   ctermbg=6    ctermfg=0
 
 set pastetoggle=<F2>
 let g:NumberToggleTrigger = "<F3>"
@@ -82,6 +68,13 @@ nnoremap <up> <nop>
 nnoremap <down> <nop>
 nnoremap <left> <nop>
 nnoremap <right> <nop>
+
+noremap j gj
+noremap k gk
+noremap gj j
+noremap gk k
+
+noremap ; :
 
 nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
@@ -135,8 +128,6 @@ autocmd User GoyoLeave call <SID>goyo_leave()
 "  eliminate white spaace
 nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z<cr>:w<cr>
 
-nmap ; :
-
 command Q execute "qa!"
 
 "use CTRL-f to activate find
@@ -153,9 +144,6 @@ nnoremap <silent> <F1> :NERDTreeToggle<CR>
 
 " map . in visual mode
 vnoremap . :norm.<cr>
-
-"vim Clojure
-let vimclojure#HighlightBuiltins=1
 
 " multi-purpose tab key (auto-complete)
 function! InsertTabWrapper()
@@ -180,130 +168,4 @@ function! RenameFile()
   endif
 endfunction
 map <leader>n :call RenameFile()<cr>
-
-
-" executute current test file
-function! ExecuteCurrentSpecFile()
-  silent !clear
-  let l:file = expand('%')
-  exec ':w'
-  if match(l:file,"spec") >= 0
-    call ExecuteTestInPipe(l:file)
-  else
-    let l:alternative = GetAlternativeFile(l:file)
-    call ExecuteTestInPipe(l:alternative)
-  endif
-endfunction
-
-function! ExecuteSingleLineInCurrentSpecFile()
-  silent !clear
-  exec ':w'
-  let file = expand('%')
-  let line = line('.')
-  call ExecuteTestInPipe(file.":".line)
-endfunction
-
-function! ExecuteAllTestsInPipe()
-  exec ':w'
-  call ExecuteTestInPipe("spec")
-endfunction
-
-function! ExecuteTestInPipe(file)
-  let g:file_for_last_test = a:file
-  call SendToPipe('bundle exec rspec --color '.a:file)
-endfunction
-
-function! SendToPipe(line)
-  if filereadable("test-commands")
-    exec ':silent :!echo "clear; '.a:line.'" > test-commands'
-    exec ':redraw!'
-  else
-    exec ':! '.a:line
-  endif
-endfunction
-
-function! RunTestSh()
-  call SendToPipe('./test.sh')
-endfunction
-
-function! SendToPipeWrapper(...)
-  call SendToPipe(join(a:000," "))
-endfunction
-command! -nargs=* Tpipe call SendToPipeWrapper(<f-args>)
-
-function! OpenAlternativeFile()
-  silent !clear
-  let l:current_file = expand('%')
-  let l:alternative_file = GetAlternativeFile(l:current_file)
-  exec ':w'
-  exec ':e '.l:alternative_file
-  exec ':redraw!'
-endfunction
-
-
-function! GetAlternativeFile(input)
-  if match(a:input,"spec") >= 0
-    let l:alternative_file = substitute(a:input, "_spec.rb", ".rb", "")
-    return substitute(l:alternative_file , "spec", "lib", "")
-  else
-    let l:alternative_file = substitute(a:input, ".rb", "_spec.rb", "")
-    return substitute(l:alternative_file, "lib", "spec", "")
-  endif
-endfunction
-
-function! RerunLastTest()
-  exec ':w'
-  if exists('g:file_for_last_test')
-    call ExecuteTestInPipe(g:file_for_last_test)
-  else
-    call ExecuteAllTestsInPipe()
-  endif
-endfunction
-
-map <leader>a :call OpenAlternativeFile()<cr>
-
-map <leader>R :call ExecuteAllTestsInPipe()<cr>
-map <leader>t :call ExecuteCurrentSpecFile()<cr>
-map <leader>T :call ExecuteSingleLineInCurrentSpecFile()<cr>
-map <leader>r :call RerunLastTest()<cr>
-
-map <leader>co :call ToggleComments()<cr>
-
-function! ToggleComments() range
-  let l:first = line("'<")
-  let l:last  = line("'>")
-  let l:line = getline(l:first)
-  if match(l:line, "^#") >= 0
-    exec ':'.l:first.','.l:last.'s/^#//'
-  else
-    exec ':'.l:first.','.l:last.'s/^/#'
-  endif
-endfunction
-
-command! -nargs=* Todo call CreateNewTask(<f-args>)
-function! CreateNewTask(...)
-  let l:current_time = strftime("%Y-%m-%d")
-  let l:session = ExtractTmuxSession()
-  let l:line = l:current_time.' '.join(a:000," ").' @vim '.l:session
-  :silent execute ':! todo.sh add '.l:line
-  exec ':redraw!'
-endfunction
-
-
-command! -nargs=0 Tmx call ExtractTmuxSession(<f-args>)
-function! ExtractTmuxSession()
-  let l:session_name = system('tmux display-message -p "#S"')
-  if empty(l:session_name)
-    return ""
-  endif
-  return '+'.l:session_name
-endfunction
-
-function! ExtractPriority(line)
-
-endfunction
-
-function! Strip(input_string)
-      return substitute(a:input_string, '^\s*\(.\{-}\)\s*$', '\1', '')
-endfunction
 
