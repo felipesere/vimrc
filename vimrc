@@ -50,7 +50,6 @@ highlight LineNr       ctermbg=00 ctermfg=240
 highlight SignColumn   ctermbg=00 ctermfg=240
 
 set pastetoggle=<F2>
-let g:NumberToggleTrigger = "<F3>"
 noremap <F4> :CommandTFlush<CR>
 noremap <F10> :AirlineRefresh<CR>
 
@@ -96,35 +95,6 @@ map <silent> <leader>e g_
 let g:vim_markdown_folding_disabled=1
 let g:NERDTreeDirArrows=0
 
-let g:goyo_width=120
-
-function! s:goyo_enter()
-  Limelight0.7
-  let b:quitting = 0
-  let b:quitting_bang = 0
-  autocmd QuitPre <buffer> let b:quitting = 1
-  cabbrev <buffer> q! let b:quitting_bang = 1 <bar> q!
-  set scrolloff=999
-endfunction
-
-function! s:goyo_leave()
-  set scrolloff=5
-  Limelight!
-  " Quit Vim if this is the only remaining buffer
-  if b:quitting && len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) == 1
-    if b:quitting_bang
-      qa!
-    else
-      qa
-    endif
-  endif
-endfunction
-
-autocmd! User GoyoEnter
-autocmd! User GoyoLeave
-autocmd User GoyoEnter call <SID>goyo_enter()
-autocmd User GoyoLeave call <SID>goyo_leave()
-
 "  eliminate white spaace
 nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z<cr>:w<cr>
 
@@ -168,4 +138,3 @@ function! RenameFile()
   endif
 endfunction
 map <leader>n :call RenameFile()<cr>
-
