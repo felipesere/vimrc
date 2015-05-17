@@ -53,32 +53,12 @@ set pastetoggle=<F2>
 noremap <F4> :CommandTFlush<CR>
 noremap <F10> :AirlineRefresh<CR>
 
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
-
-vnoremap <up> <nop>
-vnoremap <down> <nop>
-vnoremap <left> <nop>
-vnoremap <right> <nop>
-
-nnoremap <up> <nop>
-nnoremap <down> <nop>
-nnoremap <left> <nop>
-nnoremap <right> <nop>
-
 noremap j gj
 noremap k gk
 noremap gj j
 noremap gk k
 
 noremap ; :
-
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
 
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
