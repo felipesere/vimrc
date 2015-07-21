@@ -50,7 +50,6 @@ highlight LineNr       ctermbg=00 ctermfg=240
 highlight SignColumn   ctermbg=00 ctermfg=240
 
 set pastetoggle=<F2>
-noremap <F4> :CommandTFlush<CR>
 noremap <F10> :AirlineRefresh<CR>
 
 noremap j gj
@@ -66,6 +65,16 @@ let g:airline_section_b = ''
 let g:airline_section_x = ''
 let g:airline_section_y = ''
 
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_elixir_checker = 1
+
 " set leader key to comma
 let mapleader = ","
 map <leader>S :so $MYVIMRC <cr>
@@ -80,11 +89,11 @@ nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z<cr>:w<cr>
 
 command Q execute "qa!"
 
-"use CTRL-f to activate find
-nnoremap <silent> <C-p> :CommandT<CR>
-let g:CommandTMaxHeight=10
-let g:CommandTMatchWindowReverse=1
-let g:COmmandTAcceptSelectionSplitMap=['<CR>','<C-h>']
+"use CTRL-P to activate find
+nnoremap <silent> <C-p> :CtrlP<CR>
+let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden  --ignore .git -g ""'
+let g:ctrlp_match_func = {'match' : 'pymatcher#PyMatch' }
+let g:ctrlp_clear_cache_on_exit = 1
 
 " unmap F1 help
 nmap <F1> :echo<CR>
