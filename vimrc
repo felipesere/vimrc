@@ -50,7 +50,7 @@ highlight LineNr       ctermbg=00 ctermfg=240
 highlight SignColumn   ctermbg=00 ctermfg=240
 
 set pastetoggle=<F2>
-noremap <F10> :AirlineRefresh<CR>
+noremap <F10> :CommandTFlush<CR>
 
 noremap j gj
 noremap k gk
@@ -65,15 +65,15 @@ let g:airline_section_b = ''
 let g:airline_section_x = ''
 let g:airline_section_y = ''
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+let g:RootIgnoreUseHome = 1
+let g:CommandTTraverseSCM = 'pwd'
+let g:CommandTMatchWindowReverse = 1
 
-let g:syntastic_always_populate_loc_list = 0
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:syntastic_enable_elixir_checker = 1
+let g:CommandTMaxHeight = 10
+let g:CommandTAcceptSelectionSplitMap=['<C-s>']
+let g:CommandTAcceptSelectionVSplitMap=['<C-v>']
+
+noremap <C-p> :CommandT<CR>
 
 " set leader key to comma
 let mapleader = ","
@@ -89,17 +89,17 @@ nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z<cr>:w<cr>
 
 command Q execute "qa!"
 
-"use CTRL-P to activate find
-nnoremap <silent> <C-p> :CtrlP<CR>
-let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden  --ignore .git -g ""'
-let g:ctrlp_match_func = {'match' : 'pymatcher#PyMatch' }
-let g:ctrlp_clear_cache_on_exit = 1
-
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
 
 nnoremap <silent> <F1> :NERDTreeToggle<CR>
+nnoremap <silent> <leader>f :NERDTreeFind<CR>
+
+" ELM
+nnoremap <leader>el :ElmEvalLine<CR>
+vnoremap <leader>es :<C-u>ElmEvalSelection<CR>
+nnoremap <leader>em :ElmMakeCurrentFile<CR>
 
 " map . in visual mode
 vnoremap . :norm.<cr>
