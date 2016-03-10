@@ -43,14 +43,12 @@ set background=dark
 colorscheme base16-default
 
 " set up some custom colors
-"highlight clear SignColumn
 highlight VertSplit    ctermbg=00
 highlight ColorColumn  ctermbg=00
 highlight LineNr       ctermbg=00 ctermfg=240
-highlight SignColumn   ctermbg=00 ctermfg=240
 
 set pastetoggle=<F2>
-noremap <F10> :CommandTFlush<CR>
+noremap <F10> :CtrlPClearCache<CR>
 
 noremap j gj
 noremap k gk
@@ -58,6 +56,7 @@ noremap gj j
 noremap gk k
 
 noremap ; :
+command Q execute "qa!"
 
 let g:airline_left_sep = ''
 let g:airline_right_sep = ''
@@ -66,12 +65,6 @@ let g:airline_section_x = ''
 let g:airline_section_y = ''
 
 let g:RootIgnoreUseHome = 1
-let g:CommandTTraverseSCM = 'pwd'
-let g:CommandTMatchWindowReverse = 1
-
-let g:CommandTMaxHeight = 10
-let g:CommandTAcceptSelectionSplitMap=['<C-s>']
-let g:CommandTAcceptSelectionVSplitMap=['<C-v>']
 
 noremap <C-p> :CommandT<CR>
 
@@ -80,29 +73,32 @@ let mapleader = ","
 map <leader>S :so $MYVIMRC <cr>
 
 map <silent> <leader><space> :nohl<cr>
-map <silent> <leader>e g_
 let g:vim_markdown_folding_disabled=1
 let g:NERDTreeDirArrows=0
 
 "  eliminate white spaace
 nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z<cr>:w<cr>
 
-command Q execute "qa!"
 
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
 
 nnoremap <silent> <F1> :NERDTreeToggle<CR>
-nnoremap <silent> <leader>f :NERDTreeFind<CR>
-
-" ELM
-nnoremap <leader>el :ElmEvalLine<CR>
-vnoremap <leader>es :<C-u>ElmEvalSelection<CR>
-nnoremap <leader>em :ElmMakeCurrentFile<CR>
+nnoremap <silent> <leader>f :NERDTreeToggle<CR>
+nnoremap <silent> <leader>F :NERDTreeFind<CR>
 
 " map . in visual mode
 vnoremap . :norm.<cr>
+
+
+" highlight unwanted whitespace
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 
 " multi-purpose tab key (auto-complete)
 function! InsertTabWrapper()
