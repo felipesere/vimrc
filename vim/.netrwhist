@@ -1,8 +1,9 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_cnt =7
 let g:netrw_dirhist_1='/Users/felipe/Development/8L/footprints'
 let g:netrw_dirhist_2='/Users/felipe/Development/8L/TP/branch-cache-flusher'
 let g:netrw_dirhist_3='/Users/felipe/Development/rust/icepick/src'
 let g:netrw_dirhist_4='/Users/felipe'
 let g:netrw_dirhist_5='/Users/felipe/Development/elixir/faros'
 let g:netrw_dirhist_6='/Users/felipe/Development/config/vim.config'
+let g:netrw_dirhist_7='/Users/felipe/Development/config/vim.config/vim'

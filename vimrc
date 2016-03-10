@@ -1,8 +1,31 @@
 " .vimrc
+"
+"
+" TODO: 
+"  * make sure to have lua-support compiled in
+"  * install unite
+"  * install vimproc
+"  * install vimfiler
+call plug#begin('~/.vim/plugged')
 
-" load up pathogen and all bundles
-call pathogen#infect()
-call pathogen#helptags()
+  Plug 'chriskempson/base16-vim'
+  Plug 'ctrlpvim/ctrlp.vim'
+  Plug 'ElmCast/elm-vim'
+  Plug 'octref/RootIgnore'
+  Plug 'cakebaker/scss-syntax.vim'
+  Plug 'bling/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  Plug 'elixir-lang/vim-elixir'
+  Plug 'tfnico/vim-gradle'
+  Plug 'mattreduce/vim-mix'
+  Plug 'tpope/vim-surround'
+  Plug 'bkad/vim-terraform'
+  Plug 'kchmck/vim-coffee-script'
+  Plug 'mtscout6/vim-cjsx'
+  Plug 'cespare/vim-toml'
+  Plug 'wting/rust.vim'
+  Plug 'scrooloose/nerdtree'
+call plug#end()
 
 scriptencoding utf-8
 set encoding=utf-8
@@ -36,14 +59,15 @@ runtime macros/matchit.vim        " use % to jump between start/end of methods
 set shortmess+=I
 set noswapfile
 
+let g:loaded_netrw       = 1
+let g:loaded_netrwPlugin = 1
 let g:netrw_banner=0
 
-" set dark background and color scheme
-set background=dark
+" set color scheme
 colorscheme base16-default
+let g:airline_theme = 'base16'
 
 " set up some custom colors
-highlight VertSplit    ctermbg=00
 highlight ColorColumn  ctermbg=00
 highlight LineNr       ctermbg=00 ctermfg=240
 
@@ -55,7 +79,6 @@ noremap k gk
 noremap gj j
 noremap gk k
 
-noremap ; :
 command Q execute "qa!"
 
 let g:airline_left_sep = ''
@@ -74,17 +97,14 @@ map <leader>S :so $MYVIMRC <cr>
 
 map <silent> <leader><space> :nohl<cr>
 let g:vim_markdown_folding_disabled=1
-let g:NERDTreeDirArrows=0
 
 "  eliminate white spaace
 nnoremap <leader>w mz:%s/\s\+$//<cr>:let @/=''<cr>`z<cr>:w<cr>
-
 
 " unmap F1 help
 nmap <F1> :echo<CR>
 imap <F1> <C-o>:echo<CR>
 
-nnoremap <silent> <F1> :NERDTreeToggle<CR>
 nnoremap <silent> <leader>f :NERDTreeToggle<CR>
 nnoremap <silent> <leader>F :NERDTreeFind<CR>
 
