@@ -1,30 +1,25 @@
-" .vimrc
-"
-"
-" TODO: 
-"  * make sure to have lua-support compiled in
-"  * install unite
-"  * install vimproc
-"  * install vimfiler
+" Install basic plugins
 call plug#begin('~/.vim/plugged')
 
   Plug 'chriskempson/base16-vim'
   Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'ElmCast/elm-vim'
   Plug 'octref/RootIgnore'
-  Plug 'cakebaker/scss-syntax.vim'
   Plug 'bling/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  Plug 'elixir-lang/vim-elixir'
-  Plug 'tfnico/vim-gradle'
-  Plug 'mattreduce/vim-mix'
   Plug 'tpope/vim-surround'
-  Plug 'bkad/vim-terraform'
-  Plug 'kchmck/vim-coffee-script'
-  Plug 'mtscout6/vim-cjsx'
-  Plug 'cespare/vim-toml'
-  Plug 'wting/rust.vim'
   Plug 'scrooloose/nerdtree'
+
+  Plug 'Shougo/unite.vim'
+  Plug 'Shougo/vimfiler.vim'
+  Plug 'Shougo/vimproc.vim', { 'do' : 'make' }
+
+  Plug 'bkad/vim-terraform', { 'for' :  'terraform' }
+  Plug 'elixir-lang/vim-elixir', { 'for' : 'elixir' }
+  Plug 'tfnico/vim-gradle', { 'for' : 'groovy' }
+  Plug 'cakebaker/scss-syntax.vim', { 'for' : 'scss' }
+  Plug 'cespare/vim-toml', { 'for' : 'toml' }
+  Plug 'wting/rust.vim',   { 'for' : 'rust' }
+  Plug 'ElmCast/elm-vim',  { 'for' : 'elm' }
 call plug#end()
 
 scriptencoding utf-8
@@ -62,6 +57,9 @@ set noswapfile
 let g:loaded_netrw       = 1
 let g:loaded_netrwPlugin = 1
 let g:netrw_banner=0
+
+call vimfiler#custom#profile('default', 'context', { 'force_quit': 1, 'safe': 0 })
+nmap <leader>F :VimFilerExplorer<CR>
 
 " set color scheme
 colorscheme base16-default
@@ -110,15 +108,6 @@ nnoremap <silent> <leader>F :NERDTreeFind<CR>
 
 " map . in visual mode
 vnoremap . :norm.<cr>
-
-
-" highlight unwanted whitespace
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
 
 " multi-purpose tab key (auto-complete)
 function! InsertTabWrapper()
